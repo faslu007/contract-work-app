@@ -1,0 +1,16 @@
+#root {
+  width: 100%;
+  height: 100%;
+  min-height: 100vh;
+  /* Ensures the container takes up the full viewport height */
+  display: flex;
+  flex-direction: column;
+  background-image: linear-gradient(to right top, #365787, #375a8d, #385d93, #3a619a, #3b64a0, #3b64a0, #3b64a0, #3b64a0, #3a619a, #385d93, #375a8d, #365787);
+}
+
+
+@media (min-width: 600px) {
+  #root {
+    flex-direction: row;
+  }
+}
