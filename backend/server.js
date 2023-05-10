@@ -14,7 +14,7 @@ const app = express();
 
 
 app.get('*', function (req, res) {
-    res.sendFile(path.join(__dirname, './frontend/build/index.html'), function (err) {
+    res.sendFile(path.join(__dirname, '../frontend/build/index.html'), function (err) {
         if (err) {
             res.status(500).send(err);
         }
