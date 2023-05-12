@@ -1,0 +1,13 @@
+.container-dashboard {
+    margin-top: 35px !important;
+    margin: 3%;
+}
+
+.row-1 {
+    margin-top: 5px;
+    height: 'auto';
+    border-radius: 15px;
+    background: #ffffff;
+    box-shadow: 10px 10px 25px #cccccc,
+        -10px -10px 25px #ffffff;
+}

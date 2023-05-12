@@ -14,3 +14,20 @@
     flex-direction: row;
   }
 }
+@keyframes colorAnimation {
+  0% {
+    color: #006DDB;
+  }
+
+  50% {
+    color: #3a8673;
+  }
+
+  100% {
+    color: #006DDB;
+  }
+}
+
+.animated-span {
+  animation: colorAnimation 3s infinite;
+}
