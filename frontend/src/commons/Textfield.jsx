@@ -16,6 +16,7 @@ const TextFieldCustom = ({
   inputRef,
   onKeyDown,
   value,
+  disabled,
 }) => {
   return (
     <Stack sx={{ marginBottom: "10px" }}>
@@ -29,29 +30,30 @@ const TextFieldCustom = ({
         name={name}
         id={id}
         inputRef={inputRef}
+        disabled={disabled}
         onKeyDown={onKeyDown ?? ""}
-        sx={{
-          "& .MuiInputLabel-root": {
-            color: "white",
-          },
-          "& .MuiOutlinedInput-root": {
-            "& fieldset": {
-              borderColor: "white",
-            },
-            "&.Mui-focused fieldset": {
-              borderColor: "white",
-            },
-            "& .MuiInputBase-input": {
-              color: "white",
-            },
-            "& .MuiInputAdornment-root": {
-              color: "white",
-            },
-            "& .MuiOutlinedInput-notchedOutline": {
-              borderColor: "white",
-            },
-          },
-        }}
+        // sx={{
+        //   "& .MuiInputLabel-root": {
+        //     color: "white",
+        //   },
+        //   "& .MuiOutlinedInput-root": {
+        //     "& fieldset": {
+        //       borderColor: "white",
+        //     },
+        //     "&.Mui-focused fieldset": {
+        //       borderColor: "white",
+        //     },
+        //     "& .MuiInputBase-input": {
+        //       color: "white",
+        //     },
+        //     "& .MuiInputAdornment-root": {
+        //       color: "white",
+        //     },
+        //     "& .MuiOutlinedInput-notchedOutline": {
+        //       borderColor: "white",
+        //     },
+        //   },
+        // }}
         InputProps={{
           startAdornment: (
             <InputAdornment position="start">{startAdornment}</InputAdornment>
@@ -63,9 +65,9 @@ const TextFieldCustom = ({
         }}
         error={error}
         helperText={errorMessage}
-        InputLabelProps={{
-          className: "white-label",
-        }}
+        // InputLabelProps={{
+        //   className: "white-label",
+        // }}
       />
     </Stack>
   );
