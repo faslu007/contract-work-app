@@ -120,7 +120,7 @@ function Login() {
   return (
     <>
       <div
-        className="loginPage"
+        className="loginPage container-login"
         id="loginPageMaster"
         style={{ padding: "10px" }}
       >

@@ -1,4 +1,4 @@
-.container {
+.container-login {
     margin-top: 30%;
     margin-left: 5%;
     margin-right: 5%;
@@ -7,8 +7,8 @@
     /* background-color: #394867; */
 
 
-    height: 60vh;
-    /* 60% of the viewport height */
+    min-height: auto;
+        /* 60% of the viewport height */
     width: 85vw;
     /* 85% of the viewport width */
 }
@@ -22,18 +22,3 @@
 }
 
 
-@keyframes colorAnimation {
-    0% {
-        color: #006DDB;
-    }
-    50% {
-        color: #3a8673;
-    }
-    100% {
-        color: #006DDB;
-    }
-}
-
-.animated-span {
-    animation: colorAnimation 3s infinite;
-}
