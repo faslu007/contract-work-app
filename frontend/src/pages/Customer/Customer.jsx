@@ -23,6 +23,7 @@ import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import countryCodes from "../../utils,js/constants";
 import SendIcon from "@mui/icons-material/Send";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
+import LoadingSnackBar from "../../commons/SnackBar";
 
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -66,6 +67,11 @@ function Customers() {
       setFormCompleteIndication(3);
     }
   }, [userInput]);
+
+  useEffect(() => {
+    if (isSuccess) {
+    }
+  });
 
   function handleClose() {
     setModalState(false);
@@ -115,16 +121,9 @@ function Customers() {
     setModalState(false);
   };
 
-  if (isLoading) {
-    toast.info("Creating new customer...");
-  } else if (isSuccess) {
-    toast.success("Customer created successfully.");
-  } else if (isError) {
-    toast.error("Error in creating customer.");
-  }
-
   return (
     <>
+      <LoadingSnackBar isLoading={true} type="loading"/>
       <BottomAppBar onClick={() => setModalState(true)} />
       <CommonModal
         open={modalState}
