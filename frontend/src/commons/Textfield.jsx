@@ -31,7 +31,7 @@ const TextFieldCustom = ({
         id={id}
         inputRef={inputRef}
         disabled={disabled}
-        onKeyDown={onKeyDown ?? ""}
+        onKeyDown={onKeyDown ?? (() => {})}
         // sx={{
         //   "& .MuiInputLabel-root": {
         //     color: "white",
