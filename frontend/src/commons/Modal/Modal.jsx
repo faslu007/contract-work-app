@@ -5,11 +5,16 @@ const CommonModal = (props) => {
   const { open, handleClose, header, buttonName, handleSave, children } = props;
 
   return (
-    <Modal open={open} onClose={handleClose}>
+    <Modal
+      open={open}
+      onClose={handleClose}
+      BackdropComponent={Box}
+      sx={{ backgroundColor: "rgba(0,0,0,0.5)" }}
+    >
       <Box
         sx={{
           position: "absolute",
-          top: "20%",
+          top: "40%",
           left: "50%",
           transform: "translate(-50%, -50%)",
           width: "85vw",

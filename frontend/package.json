@@ -1,6 +1,7 @@
 {
   "name": "frontend",
   "version": "0.1.0",
+  "proxy": "http://localhost:5000",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.11.0",
@@ -14,6 +15,7 @@
     "@testing-library/user-event": "^14.4.3",
     "axios": "^1.4.0",
     "material-ui-phone-number": "^3.0.0",
+    "prismjs": "^1.29.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-draggable": "^4.4.5",
@@ -21,6 +23,8 @@
     "react-redux": "^8.0.5",
     "react-router-dom": "^6.11.1",
     "react-scripts": "5.0.1",
+    "react-syntax-highlighter": "^15.5.0",
+    "react-toastify": "^9.1.2",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

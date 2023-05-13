@@ -199,7 +199,7 @@ function Login() {
               <TextFieldCustom
                 label="Phone Number"
                 size="small"
-                type={"number"}
+                type={"tel"}
                 id={"login-phone"}
                 name={"phone"}
                 value={loginInput.phone}
@@ -214,7 +214,7 @@ function Login() {
               <TextFieldCustom
                 label="Login PIN (4 digit)"
                 size="small"
-                type={"number"}
+                type={"tel"}
                 value={loginInput.pin}
                 id={"login-pin"}
                 onValueChange={onValueChange}
@@ -297,7 +297,7 @@ function Login() {
               <TextFieldCustom
                 label="Phone Number"
                 size="small"
-                type={"number"}
+                type={"tel"}
                 id={"login-phone"}
                 name={"phone"}
                 value={loginInput.phone}
