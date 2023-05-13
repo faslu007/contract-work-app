@@ -9,6 +9,9 @@ var colors = require('colors');
 colors.enable()
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const User = require('./models/user')
+const { errorHandler } = require('./middlewares/errorMiddleware')
+
 
 
 connectDb();
@@ -46,7 +49,7 @@ if (process.env.NODE_ENV === 'development') {
         console.log(`Ngrok URL: ${url}`.underline.blue);
     }
 
-    connectToNgrork()
+    // connectToNgrork()
 
 }
 
@@ -64,5 +67,8 @@ if (process.env.NODE_ENV === 'production') {
     app.get('/', (req, res) => res.send('Please set to production'));
 }
 
+
+// error handler middleware - return structured error message - this should be always placed beneath the routes to work
+app.use(errorHandler);
 
 app.listen(port, () => console.log(`Server started on port ${port}`.underline.yellow));

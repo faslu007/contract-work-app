@@ -1,6 +1,8 @@
 const bcrypt = require('bcryptjs');
 const asyncHandler = require('express-async-handler');
 const User = require('../models/user');
+const mongoosePaginate = require('mongoose-paginate-v2');
+
 
 
 // @Login
@@ -35,55 +37,100 @@ const loginUser = asyncHandler(async (req, res) => {
 // @access Public
 // This is a temporary function, need to refactor
 const registerUser = asyncHandler(async (req, res) => {
-    console.log(req.body)
+    // Destructure required fields from request body
+    const { firstName, lastName, phone, communicationPhone, loginPin, role } = req.body;
+
+
+    // Check if required fields are missing
+    if (!firstName || !lastName || !phone || !role) {
+        let missingFields = []
+        if (!firstName) missingFields.push('First Name')
+        if (!lastName) missingFields.push('Last Name')
+        if (!phone) missingFields.push('Phone')
+        if (!role) missingFields.push('Role')
+        res.status(400)
+        throw new Error('Please add all fields')
+    };
     try {
-        const { firstName, lastName, phone, loginPin, role } = req.body
-
-        // form validation
-        // if (!firstName || !lastName || !phone || !phone.length != 10 || !loginPin || !loginPin.length != 4 || !role) {
-        //     res.status(400)
-        //     throw new Error('Please add all fields')
-        // }
-        console.log('teest 1')
-        // if user already exists in the db
-        const userExists = await User.findOne({ phone });
-        if (userExists) {
-            res.status(400)
-            throw new Error('User already exists');
-        }
-        console.log('teest 2')
-
-        // hash the Password
-        const salt = await bcrypt.genSalt(10);
-        const hashedLoginPin = await bcrypt.hash(loginPin, salt);
-        console.log(hashedLoginPin)
-
-
-        // create tempUser
-        try {
-            const user = await User.create({
-                firstName, lastName, phone, role, loginPin: hashedLoginPin,
+        // Check if user already exists with the provided phone number
+        const isUserAlreadyExists = await User.findOne({ phone: phone });
+        if (isUserAlreadyExists) {
+            res.status(400).json({
+                message: 'User with the provided phone number already exists.'
             });
-        } catch (error) {
-            console.log(error)
+            return;
         }
 
-        console.log('teest 4')
+        // Create user record in the database
+        const user = await User.create({
+            firstName, lastName, phone, communicationPhone, loginPin, role
+        });
 
-        // further execution passes to the below function in the email middleware
+        // Respond with created user record
         if (user) {
             res.status(201).json(user)
-        } else {
-            res.status(400)
-            throw new Error('Error create user record!')
-        }
+        } 
     } catch (error) {
-        res.status(401)
+        // Catch and handle any errors
+        console.error(error);
+        res.status(500)
         throw new Error('Error creating user record!')
     }
-
 });
 
+
+// @Find Users based on query string - To use in Async-Type-Search
+// @Route POST get/users/findUsersByQueryString/query?: 
+// @access Public
+const findUsersByQueryString = asyncHandler(async (req, res) => {
+    const { q } = req.params;
+    if (q) {
+        const users = await User.find({
+            $or: [
+                { firstName: { $regex: q, $options: "i" } },
+                { lastName: { $regex: q, $options: "i" } },
+            ],
+        });
+        res.json(users);
+    } else {
+        const users = await User.find({});
+        res.json(users);
+    }
+});
+
+
+
+const getUsers = asyncHandler(async (req, res) => {
+    const { page = 1, limit = 10 } = req.query;
+
+    const options = {
+        page: parseInt(page, 10),
+        limit: parseInt(limit, 10),
+    };
+
+    const query = {};
+
+    // Add any additional query parameters based on your requirements
+    // Example:
+    // if (req.query.firstName) {
+    //   query.firstName = req.query.firstName;
+    // }
+
+    const users = await User.paginate(query, options);
+
+    res.json(users);
+});
+
+
+
+// @Edit user by id
+// @Route PUT /id?: 
+// @access Private
+const editUser = asyncHandler(async (req, res) => {
+    const { id } = req.query;
+    const updatedUser = await User.findByIdAndUpdate(id, req.body, { new: true });
+    res.json(updatedUser);
+});
 
 
 
@@ -101,5 +148,8 @@ const generateToken = (id) => {
 
 module.exports = {
     loginUser,
-    registerUser
+    registerUser,
+    findUsersByQueryString,
+    getUsers,
+    editUser
 }

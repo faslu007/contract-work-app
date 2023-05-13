@@ -19,19 +19,28 @@ const CommonModal = (props) => {
           borderRadius: "10px",
         }}
       >
-        <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            margin: "0px",
+            padding: "0px",
+          }}
+        >
           <Typography variant="h6" component="h3">
             {header}
           </Typography>
           <Button onClick={handleClose}>X</Button>
         </Box>
         <Box>{children}</Box>
-        <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button variant="contained" onClick={handleSave}>
-            {buttonName}
-          </Button>
-        </Box>
+        {props.showFooter && (
+          <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
+            <Button onClick={handleClose}>Cancel</Button>
+            <Button variant="contained" onClick={handleSave}>
+              {buttonName}
+            </Button>
+          </Box>
+        )}
       </Box>
     </Modal>
   );
