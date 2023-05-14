@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 import Button from "@mui/material/Button";
@@ -20,8 +21,29 @@ import ReceiptIcon from "@mui/icons-material/Receipt";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import DescriptionIcon from "@mui/icons-material/Description";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
+import SpaceDashboardIcon from "@mui/icons-material/SpaceDashboard";
 
 export default function SwipeableTemporaryDrawer(props) {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  function handleItemClick() {
+    const str = location.pathname;
+    const pathName = str.replace("/", "");
+    window.alert(pathName);
+
+    if (pathName == "dashboard") {
+      window.alert("dashboard");
+      navigate("/dashboard");
+    } else if (pathName == "/customers") {
+      window.alert("customers");
+      navigate("/customers");
+    }
+    // if (location.pathname.toLowerCase.includes("dashboard" || "customers")) {
+    //   navigate("/customers");
+    // }
+  }
+
   const list = (anchor) => (
     <Box
       sx={{
@@ -43,13 +65,19 @@ export default function SwipeableTemporaryDrawer(props) {
           General
         </Typography>
         {[
+          { text: "Dashboard", icon: <SpaceDashboardIcon /> },
           { text: "Customers", icon: <PeopleIcon /> },
           { text: "Products", icon: <ShoppingBagIcon /> },
           { text: "Vendors", icon: <LocalShippingIcon /> },
           { text: "Employees", icon: <PersonIcon /> },
         ].map((item, index) => (
-          <ListItem key={item.text} disablePadding>
-            <ListItemButton>
+          <ListItem id={`appBarItem-${index}`} key={item.text} disablePadding>
+            <ListItemButton
+              id={`1appBarItem-${index}`}
+              onClick={() => {
+                handleItemClick();
+              }}
+            >
               <ListItemIcon>{item.icon}</ListItemIcon>
               <ListItemText
                 primary={item.text}
@@ -79,7 +107,11 @@ export default function SwipeableTemporaryDrawer(props) {
           { text: "Payouts", icon: <AttachMoneyIcon /> },
         ].map((item, index) => (
           <ListItem key={item.text} disablePadding>
-            <ListItemButton>
+            <ListItemButton
+              onClick={() => {
+                handleItemClick();
+              }}
+            >
               <ListItemIcon>{item.icon}</ListItemIcon>
               <ListItemText
                 primary={item.text}
@@ -91,6 +123,12 @@ export default function SwipeableTemporaryDrawer(props) {
       </List>
     </Box>
   );
+
+  // React.useEffect(() => {
+  //   const path = location.pathname;
+  //   if (path === "/dashboard") {
+  //   }
+  // }, []);
 
   return (
     <div>

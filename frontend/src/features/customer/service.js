@@ -3,20 +3,31 @@ import axios from 'axios'
 
 const API_URL = '/api/users/register-new-user'
 
-export const registerNewUser = async (user) => {
+// export const registerNewUser = async (user) => {
+//     try {
+//         const response = await axios.post(API_URL, user);
+//         return response.data
+//     } catch (error) {
+//         console.log({ err: error })
+//         return error
+//     }
+// }
+
+
+// Register user
+const registerNewUser = async (user) => {
     try {
-        const response = await axios.post(API_URL, user);
+        const response = await axios.post(API_URL, user)
+
         return response.data
     } catch (error) {
-        return error
+        throw error;
     }
 }
-
 
 const service = {
     registerNewUser,
 }
-
 
 
 export default service
