@@ -101,20 +101,18 @@ const findUsersByQueryString = asyncHandler(async (req, res) => {
 
 
 const getUsers = asyncHandler(async (req, res) => {
-    const { page = 1, limit = 10 } = req.query;
+    const { page = 1, limit = 10, role } = req.query;
+
+    const query = {};
+
+    if (role) {
+        query.role = role;
+    }
 
     const options = {
         page: parseInt(page, 10),
         limit: parseInt(limit, 10),
     };
-
-    const query = {};
-
-    // Add any additional query parameters based on your requirements
-    // Example:
-    // if (req.query.firstName) {
-    //   query.firstName = req.query.firstName;
-    // }
 
     const users = await User.paginate(query, options);
 

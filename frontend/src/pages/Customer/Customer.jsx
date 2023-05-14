@@ -10,6 +10,10 @@ import {
   IconButton,
   TextField,
 } from "@mui/material";
+import {
+  resetCustomerState,
+  registerCustomer,
+} from "../../features/customer/customerReducer";
 import BottomAppBar from "../../commons/bottomNav/BottomNav";
 import CommonModal from "../../commons/Modal/Modal";
 import { useEffect, useRef, useState } from "react";
@@ -28,7 +32,7 @@ import LoadingSnackBar from "../../commons/SnackBar";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { registerCustomer } from "../../features/customer/customerReducer";
+import CollapsibleTable from "./CustomerTable";
 
 function Customers() {
   const dispatch = useDispatch();
@@ -84,17 +88,17 @@ function Customers() {
         setNotificationStatus(false);
       }, 4000);
     }
-    if (isSuccess == true) {
-      window.alert("testt");
+    if (isSuccess === true && !isError === false) {
       setNotifyType("success");
       setNotificationStatus(true);
+      // dispatch(resetCustomerState("success"));
     }
 
     if (customer && customer.firstName) {
       setModalState(false);
       setTimeout(() => {
         setNotificationStatus(false);
-      }, 4000);
+      }, 3000);
     }
   }, [isLoading, isError, isSuccess, customer]);
 
@@ -350,7 +354,55 @@ function Customers() {
             Customers
           </Typography>
           <Divider sx={{ mb: 2 }} />
+
           <Grid container spacing={2}>
+            {customer?.firstName ? (
+              <Grid item xs={12}>
+                <Box
+                  sx={{
+                    width: "100%",
+                    height: "100%",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    padding: 2,
+                    borderRadius: 1,
+                    boxShadow: 3,
+                    backgroundColor: "white",
+                    position: "relative",
+                  }}
+                >
+                  <Box
+                    sx={{
+                      position: "absolute",
+                      left: 0,
+                      top: 0,
+                      bottom: 0,
+                      width: 10,
+                      backgroundColor: "green",
+                      borderTopLeftRadius: 4,
+                      borderBottomLeftRadius: 4,
+                    }}
+                  />
+                  <Typography
+                    variant="caption"
+                    sx={{ mb: 1, color: "#757575" }}
+                  >
+                    Just added
+                  </Typography>
+                  <Typography variant="h6" sx={{ mb: 1 }}>
+                    {`${customer.firstName} ${customer.lastName}`}
+                  </Typography>
+                  <Typography variant="subtitle1" sx={{ color: "#757575" }}>
+                    {customer.phone}
+                  </Typography>
+                </Box>
+              </Grid>
+            ) : null}
+
+            <CollapsibleTable />
+
             <Grid item xs={12} md={6}>
               <Paper sx={{ p: 2 }}>
                 <Typography variant="h6" gutterBottom>
