@@ -1,5 +1,13 @@
 import React from "react";
-import { Modal, Box, Typography, Button } from "@mui/material";
+import {
+  Modal,
+  Box,
+  Typography,
+  IconButton,
+  Button,
+  Divider,
+} from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 
 const CommonModal = (props) => {
   const { open, handleClose, header, buttonName, handleSave, children } = props;
@@ -35,8 +43,13 @@ const CommonModal = (props) => {
           <Typography variant="h6" component="h3">
             {header}
           </Typography>
-          <Button onClick={handleClose}>X</Button>
+          <IconButton onClick={handleClose}>
+            <CloseIcon />
+          </IconButton>
         </Box>
+
+        <Divider variant="middle" />
+
         <Box>{children}</Box>
         {props.showFooter && (
           <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>

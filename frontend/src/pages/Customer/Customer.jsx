@@ -10,6 +10,10 @@ import {
   IconButton,
   TextField,
 } from "@mui/material";
+import {
+  resetCustomerState,
+  registerCustomer,
+} from "../../features/customer/customerReducer";
 import BottomAppBar from "../../commons/bottomNav/BottomNav";
 import CommonModal from "../../commons/Modal/Modal";
 import { useEffect, useRef, useState } from "react";
@@ -28,7 +32,7 @@ import LoadingSnackBar from "../../commons/SnackBar";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { registerCustomer } from "../../features/customer/customerReducer";
+import CollapsibleTable from "./CustomerTable";
 
 function Customers() {
   const dispatch = useDispatch();
@@ -48,6 +52,10 @@ function Customers() {
 
   const [steps, setSteps] = useState(["First Name", "Last Name", "Phone"]);
   const [formCompleteIndication, setFormCompleteIndication] = useState(0);
+
+  const [notifyType, setNotifyType] = useState("");
+  const [notificationStatus, setNotificationStatus] = useState(false);
+  const [notifyMessage, setNotifyMessage] = useState("");
 
   const firstNameInputRef = useRef();
   const phoneInputRef = useRef();
@@ -69,9 +77,30 @@ function Customers() {
   }, [userInput]);
 
   useEffect(() => {
-    if (isSuccess) {
+    if (isLoading == true) {
+      setNotifyType("loading");
+      setNotificationStatus(true);
     }
-  });
+    if (isError == true) {
+      setModalState(true);
+      setNotifyType("error");
+      setTimeout(() => {
+        setNotificationStatus(false);
+      }, 4000);
+    }
+    if (isSuccess === true && !isError === false) {
+      setNotifyType("success");
+      setNotificationStatus(true);
+      // dispatch(resetCustomerState("success"));
+    }
+
+    if (customer && customer.firstName) {
+      setModalState(false);
+      setTimeout(() => {
+        setNotificationStatus(false);
+      }, 3000);
+    }
+  }, [isLoading, isError, isSuccess, customer]);
 
   function handleClose() {
     setModalState(false);
@@ -80,14 +109,25 @@ function Customers() {
   const reset = [...steps];
 
   function handleInputChange(event) {
-    setUserInput({ ...userInput, [event.target.name]: event.target.value });
+    const { name, value } = event.target;
 
-    if (event.target.name === "firstName") {
-      setSteps([event.target.value || "First Name", steps[1], steps[2]]);
-    } else if (event.target.name === "lastName") {
-      setSteps([steps[0], event.target.value || "Last Name", steps[2]]);
-    } else if (event.target.name === "phone") {
-      setSteps([steps[0], steps[1], event.target.value || "Phone"]);
+    if (name === "phone") {
+      // Replace any non-numeric characters with an empty string
+      const phoneValue = value.replace(/[^0-9]/g, "");
+
+      // Limit phone number to 10 digits
+      setUserInput({ ...userInput, [name]: phoneValue.slice(0, 10) });
+      setSteps([steps[0], steps[1], phoneValue.slice(0, 10) || "Phone"]);
+    } else {
+      // Update user input state
+      setUserInput({ ...userInput, [name]: value });
+
+      // Update steps array based on input name
+      if (name === "firstName") {
+        setSteps([value || "First Name", steps[1], steps[2]]);
+      } else if (name === "lastName") {
+        setSteps([steps[0], value || "Last Name", steps[2]]);
+      }
     }
   }
 
@@ -95,15 +135,15 @@ function Customers() {
     if (direction === "forward") {
       if (currentFormStep < 3) {
         setCurrentFormStep(currentFormStep + 1);
-        setTimeout(() => {
-          phoneInputRef.current.focus();
-        }, 800);
+        // setTimeout(() => {
+        //   phoneInputRef.current.focus();
+        // }, 800);
       }
     } else {
       setCurrentFormStep(currentFormStep - 1);
-      setTimeout(() => {
-        firstNameInputRef.current.focus();
-      }, 500);
+      // setTimeout(() => {
+      //   firstNameInputRef.current.focus();
+      // }, 500);
     }
   };
 
@@ -118,12 +158,22 @@ function Customers() {
         countryCode: "+91",
       })
     );
-    setModalState(false);
+    // setModalState(false);
+  };
+
+  const onPhoneKeyDown = (e) => {
+    if (e.key.length === 1 && !/\d/.test(e.key)) {
+      e.preventDefault();
+    }
   };
 
   return (
     <>
-      <LoadingSnackBar isLoading={true} type="loading"/>
+      <LoadingSnackBar
+        isLoading={notificationStatus}
+        type={notifyType}
+        message={notifyMessage}
+      />
       <BottomAppBar onClick={() => setModalState(true)} />
       <CommonModal
         open={modalState}
@@ -193,38 +243,44 @@ function Customers() {
           </Stack>
         )}
 
+        <Divider variant="middle" sx={{ marginBottom: "10px" }} />
+
         {currentFormStep === 2 && (
-          <Stack
-            sx={{ marginBottom: "10px", width: "100%" }}
-            direction={"row"}
-            spacing={1}
-          >
-            <TextField
-              select
-              label="Country Code"
-              value={userInput.countryCode}
-              onChange={handleInputChange}
-              name="countryCode"
-              // helperText="Please select your country code"
-              sx={{ width: "30%" }}
+          <>
+            <Stack
+              sx={{ marginBottom: "10px", width: "100%" }}
+              direction={"row"}
+              spacing={1}
             >
-              {countryCodes.map((option) => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.value}
-                </MenuItem>
-              ))}
-            </TextField>
-            <TextField
-              label="Phone Number"
-              type="tel"
-              value={userInput.phone}
-              inputRef={phoneInputRef}
-              onChange={handleInputChange}
-              // helperText="Please enter your phone number"
-              sx={{ width: "70%" }}
-              name="phone"
-            />
-          </Stack>
+              <TextField
+                select
+                label="Country Code"
+                value={userInput.countryCode}
+                onChange={handleInputChange}
+                name="countryCode"
+                // helperText="Please select your country code"
+                sx={{ width: "30%" }}
+              >
+                {countryCodes.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.value}
+                  </MenuItem>
+                ))}
+              </TextField>
+              <TextField
+                label="Phone Number"
+                type="tel"
+                value={userInput.phone}
+                onKeyDown={onPhoneKeyDown}
+                inputRef={phoneInputRef}
+                onChange={handleInputChange}
+                // helperText="Please enter your phone number"
+                sx={{ width: "70%" }}
+                name="phone"
+              />
+            </Stack>
+            <Divider variant="middle" sx={{ marginBottom: "15px" }} />
+          </>
         )}
 
         <Grid container spacing={0}>
@@ -298,7 +354,55 @@ function Customers() {
             Customers
           </Typography>
           <Divider sx={{ mb: 2 }} />
+
           <Grid container spacing={2}>
+            {customer?.firstName ? (
+              <Grid item xs={12}>
+                <Box
+                  sx={{
+                    width: "100%",
+                    height: "100%",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    padding: 2,
+                    borderRadius: 1,
+                    boxShadow: 3,
+                    backgroundColor: "white",
+                    position: "relative",
+                  }}
+                >
+                  <Box
+                    sx={{
+                      position: "absolute",
+                      left: 0,
+                      top: 0,
+                      bottom: 0,
+                      width: 10,
+                      backgroundColor: "green",
+                      borderTopLeftRadius: 4,
+                      borderBottomLeftRadius: 4,
+                    }}
+                  />
+                  <Typography
+                    variant="caption"
+                    sx={{ mb: 1, color: "#757575" }}
+                  >
+                    Just added
+                  </Typography>
+                  <Typography variant="h6" sx={{ mb: 1 }}>
+                    {`${customer.firstName} ${customer.lastName}`}
+                  </Typography>
+                  <Typography variant="subtitle1" sx={{ color: "#757575" }}>
+                    {customer.phone}
+                  </Typography>
+                </Box>
+              </Grid>
+            ) : null}
+
+            <CollapsibleTable />
+
             <Grid item xs={12} md={6}>
               <Paper sx={{ p: 2 }}>
                 <Typography variant="h6" gutterBottom>
